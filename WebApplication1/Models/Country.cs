@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace WebApplication1.Models
 {
-	public class Employee
+	public class Country
 	{
 		public Guid Id { get; set; }
 		public string Name { get; set; }
-		public Guid CountryId { get; set; }
-	}
+		public string Code { get; set; }
 
+	}
 }
