@@ -50,9 +50,9 @@ namespace WebApplication1.Controllers
 		[Route("api/[controller]/{name}")]
 		public ActionResult<string> Get(string name)
 		{
-			List<Employee> ListofEmployees = store.GetEmployee(name);
+			IEnumerable<Employee> ListofEmployees = store.GetEmployees(name);
 			return Ok(ListofEmployees);
-			
+
 		}
 	}
 }

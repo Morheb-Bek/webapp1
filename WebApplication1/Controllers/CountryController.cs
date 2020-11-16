@@ -49,7 +49,7 @@ namespace WebApplication1.Controllers
 
 		public ActionResult<string> Get(string name)
 		{
-			var submissionResult = store.GetEmployee(name);
+			var submissionResult = store.GetEmployees(name);
 			return Ok(submissionResult);
 			
 		}

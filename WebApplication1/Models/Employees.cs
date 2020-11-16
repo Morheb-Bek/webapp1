@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 
 namespace WebApplication1.Models
 {
+	
 	public class Employee
 	{
 		public Guid Id { get; set; }

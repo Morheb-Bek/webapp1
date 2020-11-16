@@ -11,8 +11,13 @@ namespace WebApplication1.Services
 	{
 		SubmissionResponse SaveEmployee(Employee employee);
 		SubmissionResponse SaveCountry(Country country);
-		List<Employee> GetEmployee(string empName);
+		IEnumerable<Employee> GetEmployees(string empName);
+
+	
 		
+	
+
 
 	}
+	
 }
