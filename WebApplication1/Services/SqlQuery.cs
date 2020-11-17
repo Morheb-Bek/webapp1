@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Controllers;
+using System.Data;
 
 namespace WebApplication1.Services
 {
@@ -18,7 +19,7 @@ namespace WebApplication1.Services
 			{
 				using (var cmd = new SqlCommand(query, connection))
 				{
-					if (parameters !=null && parameters.Length!=0)
+					if (parameters != null && parameters.Length != 0)
 					{
 						cmd.Parameters.AddRange(parameters);
 					}
@@ -30,6 +31,26 @@ namespace WebApplication1.Services
 					return new SubmissionResponse { Success = true };
 				}
 
+			}
+		}
+		public DataTable Reader(string query, params SqlParameter[] sqlParameters)
+		{
+			using (var connection = new SqlConnection(connectionString))
+			{
+				using (var adapter = new SqlDataAdapter(query, connection))
+				{
+					DataTable dataTable = new DataTable();
+					if (sqlParameters != null || sqlParameters.Any())
+					{
+						adapter.SelectCommand.Parameters.AddRange(sqlParameters);
+						
+						adapter.Fill(dataTable);
+					}
+
+					
+
+					return dataTable;
+				}
 			}
 		}
 	}

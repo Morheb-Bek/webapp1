@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Controllers;
@@ -11,7 +12,7 @@ namespace WebApplication1.Services
 	{
 		SubmissionResponse SaveEmployee(Employee employee);
 		SubmissionResponse SaveCountry(Country country);
-		IEnumerable<Employee> GetEmployees(string empName);
+		List<Employee> GetEmployees(string empName);
 
 	
 		

@@ -5,16 +5,18 @@ using System.Threading.Tasks;
 using WebApplication1.Controllers;
 using WebApplication1.Models;
 using System.Data.SqlClient;
+using System.Data;
+
 namespace WebApplication1.Services
 {
 	public class SqlStore : IStore
 	{
 		private readonly string connectionString;
 		private readonly SqlQuery sqlQuery;
-		public SqlStore(SqlQuery sqlQuery)         
+		public SqlStore()         
 		{
 			this.connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\morhe\Documents\EmpDB.mdf;Integrated Security=True;Connect Timeout=30";
-			this.sqlQuery = sqlQuery;
+			
 		}
 
 	public SubmissionResponse SaveEmployee(Employee employee)
@@ -33,40 +35,63 @@ namespace WebApplication1.Services
 			//		return new SubmissionResponse { Success = true };
 			//	}
 			//}
-			return sqlQuery.PostQuery("INSERT INTO Employee (Id , Name, CountryId) Values (@Id, @Name, @CountryId) ",
+			  SqlQuery sqlQuery = new SqlQuery();
+				return sqlQuery.PostQuery("INSERT INTO Employee (Id , Name, CountryId) Values (@Id, @Name, @CountryId) ",
 				new[] {
-					new SqlParameter ("@Id", employee.Id), 
-					new SqlParameter ("@Name", employee.Name), 
-					new SqlParameter ("@CountryId", employee.CountryId) 
+					new SqlParameter ("@Id", employee.Id),
+					new SqlParameter ("@Name", employee.Name),
+					new SqlParameter ("@CountryId", employee.CountryId)
 				});
 	}
-	public IEnumerable<Employee> GetEmployees(string empName)
+	public List<Employee> GetEmployees(string empName)
 	{
-		List<Employee> listOfEmployees = new List<Employee>();
+		
 
-		using (var connection = new SqlConnection(connectionString))
-		{
-			connection.Open();
-			using (SqlCommand command = new SqlCommand("SELECT * FROM Employee WHERE Name = @name", connection))
+			//using (var connection = new SqlConnection(connectionString))
+			//{
+			//	connection.Open();
+			//	using (SqlCommand command = new SqlCommand("SELECT * FROM Employee WHERE Name = @name", connection))
+			//	{
+			//		command.Parameters.AddWithValue("@Name", empName);
+			//		using (SqlDataReader reader = command.ExecuteReader())
+			//		{
+			//			while (reader.Read())
+			//			{
+			//				Employee employee = new Employee();
+
+			//				employee.Id = reader.GetGuid(reader.GetOrdinal("Id"));
+			//				employee.Name = reader.GetString(reader.GetOrdinal("Name"));
+			//				employee.CountryId = reader.GetGuid(reader.GetOrdinal("CountryId"));
+
+			//				listOfEmployees.Add(employee);
+
+			//			}
+			//			return (listOfEmployees);
+			//		}
+			//	}
+			//}
+			SqlQuery sqlQuery = new SqlQuery();
+		
+			DataTable dataTable = sqlQuery.Reader("SELECT * FROM [Employee] WHERE [Name] LIKE '%' +  @name + '%'",
+				new SqlParameter("@name", empName));
+			var employees = new List<Employee>();
+				foreach(DataRow row in dataTable.Rows)
 			{
-				command.Parameters.AddWithValue("@Name", empName);
-				using (SqlDataReader reader = command.ExecuteReader())
+
+				employees.Add(new Employee
 				{
-					while (reader.Read())
-					{
-						Employee employee = new Employee();
 
-						employee.Id = reader.GetGuid(reader.GetOrdinal("Id"));
-						employee.Name = reader.GetString(reader.GetOrdinal("Name"));
-						employee.CountryId = reader.GetGuid(reader.GetOrdinal("CountryId"));
+					Id = (Guid)row["Id"],
 
-						listOfEmployees.Add(employee);
+					Name = (string)row["Name"],
+					CountryId = (Guid)row["CountryId"]
 
-					}
-					return (listOfEmployees);
-				}
+  });
 			}
-		}
+			return employees;
+
+			 
+
 	}
 	public SubmissionResponse SaveCountry(Country country)
 	{
@@ -76,7 +101,7 @@ namespace WebApplication1.Services
 			{
 				cmd.Parameters.AddWithValue("@Id", country.Id);
 				cmd.Parameters.AddWithValue("@Name", country.Name);
-				cmd.Parameters.AddWithValue("@Code", country.Code);
+				cmd.Parameters.AddWithValue("@Code", country .Code);
 				connection.Open();
 				cmd.ExecuteNonQuery();
 				return new SubmissionResponse { Success = true };

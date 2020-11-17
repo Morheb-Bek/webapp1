@@ -9,6 +9,7 @@ using WebApplication1.Models;
 using Newtonsoft.Json;
 using System.Threading.Tasks.Dataflow;
 using WebApplication1.Services;
+using System.Data;
 
 namespace WebApplication1.Controllers
 {
@@ -50,7 +51,7 @@ namespace WebApplication1.Controllers
 		[Route("api/[controller]/{name}")]
 		public ActionResult<string> Get(string name)
 		{
-			IEnumerable<Employee> ListofEmployees = store.GetEmployees(name);
+			List<Employee>  ListofEmployees = store.GetEmployees(name);
 			return Ok(ListofEmployees);
 
 		}
